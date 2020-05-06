@@ -89,8 +89,8 @@ public class Hits {
 
 
             //выводим результат на экран
-            System.out.println(i + ": " + "a: " + Arrays.toString(a));
-            System.out.println(i + ": " + "h: " + Arrays.toString(h));
+            System.out.println(i + 1 + ": " + "a: " + Arrays.toString(a));
+            System.out.println(i + 1 + ": " + "h: " + Arrays.toString(h));
         }
         System.out.print("\t\t\t\t");
         for(int i = 0; i < keys.size(); i++){
