@@ -1,6 +1,7 @@
 import com.opencsv.CSVReader;
 import starter.Pair;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,8 +19,6 @@ public class Multihash {
                 records.add(Arrays.asList(values[0].split(";")));
             }
         }
-        Adler32 adler32 = new Adler32();
-        CRC32 crc32 = new CRC32();
         System.out.println(records.size());
         Map<String, Integer> countMap = new HashMap<>();
         Map<String, List<String>> bucketMap = new HashMap<>();
@@ -56,24 +55,17 @@ public class Multihash {
         int size;
         for(String buck: bucketMap.keySet()){
             List<String> strings = bucketMap.get(buck);
-            System.out.println(strings);
             size = strings.size();
             List<Pair<Integer,Integer>> pairs = new ArrayList<>();
             bucketPairs.put(buck, new ArrayList<>());
             for(int s = 0; s < size - 1; s++){
                 for(int end = s + 1; end < size; end++) {
                     String first = strings.get(s);
-                    System.out.print(first);
                     String last = strings.get(end);
-                    System.out.print(last);
                     Pair<Integer, Integer> pair = new Pair<>(numberMap.get(first), numberMap.get(last));
-                    System.out.print(pair);
                     pairs.add(pair);
-                    System.out.print("\n");
                 }
             }
-            System.out.println("Bucket size: " + size);
-            System.out.println("Pairs size: " + pairs.size());
         }
         int mod = numberMap.size();
 
@@ -96,5 +88,49 @@ public class Multihash {
             }
         }
 
+        Map<Integer, List<Pair<Integer,Integer>>> secondBucket = new HashMap<>();
+
+        for(Map.Entry<String,List<Pair<Integer,Integer>>> entry: bucketPairs.entrySet()){
+            for(Pair<Integer,Integer> pair : entry.getValue()){
+                long hash = 5 * pair.value + 7 * pair.key;
+                int index = (int)(hash % mod);
+                if(firstBucket.get(index) != null){
+                    List<Pair<Integer,Integer>> pairs = firstBucket.get(index);
+                    pairs.add(pair);
+                    secondBucket.put(index,pairs);
+                }
+                else{
+                    List<Pair<Integer,Integer>> pairs = new ArrayList<>();
+                    pairs.add(pair);
+                    secondBucket.put(index,pairs);
+                }
+            }
+        }
+
+        //calculating result added after 3 min after control work ended (19:03)
+        List<String> result = new ArrayList<>();
+        List<Integer> failed = new ArrayList<>();
+        for(Map.Entry<String,Integer> entry: countMap.entrySet()){
+            if(entry.getValue() < 3){
+                failed.add(numberMap.get(entry.getKey()));
+            }
+            else{
+                result.add(entry.getKey());
+            }
+        }
+        Set<Pair<Integer,Integer>> res = new HashSet<>();
+        for(Map.Entry<Integer,List<Pair<Integer,Integer>>> entry: firstBucket.entrySet()){
+            if(entry.getValue().size() < 3){
+                continue;
+            }
+            res.addAll(entry.getValue());
+        }
+        for(Map.Entry<Integer,List<Pair<Integer,Integer>>> entry: secondBucket.entrySet()){
+            if(entry.getValue().size() < 3){
+                continue;
+            }
+            res.addAll(entry.getValue());
+        }
+        System.out.println("Result size:" + result.size() + res.size());
     }
 }
