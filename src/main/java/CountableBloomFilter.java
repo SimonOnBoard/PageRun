@@ -6,6 +6,7 @@ import java.util.Scanner;
 import java.util.zip.Adler32;
 import java.util.zip.CRC32;
 import java.util.zip.CRC32C;
+
 public class CountableBloomFilter {
     public static void main(String[] args) throws IOException {
         FileReader fileReader = new FileReader("data.txt");
@@ -35,21 +36,30 @@ public class CountableBloomFilter {
         long secondVal;
         long thirdVal;
         int index;
-        for(String word : words){
+        for (String word : words) {
             //Прогоняем наше слово через 3 hash functions
-            adler32.update(word.getBytes(),0,word.length());
+            adler32.update(word.getBytes(), 0, word.length());
             firstVal = adler32.getValue();
-            crc32.update(word.getBytes(),0,word.length());
+            crc32.update(word.getBytes(), 0, word.length());
             secondVal = crc32.getValue();
             thirdVal = Math.abs(word.hashCode());
             //Прибавлеяем 1 к позициям, которые равны val % mod
-            index = (int)(firstVal % mod);
+            index = (int) (firstVal % mod);
             filter[index] += 1;
-            index = (int)(secondVal % mod);
+            index = (int) (secondVal % mod);
             filter[index] += 1;
-            index = (int)(thirdVal % mod);
+            index = (int) (thirdVal % mod);
             filter[index] += 1;
         }
+        File file;
+        FileWriter fileWriter = new FileWriter("res.txt", false);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+        String res = "";
+        for (int i = 0; i < filter.length; i++) {
+            res += filter[i];
+        }
+        bufferedWriter.write(res);
+        bufferedWriter.close();
         System.out.println(Arrays.toString(filter));
     }
 }
