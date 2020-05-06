@@ -26,7 +26,7 @@ public class Runer {
         for (String string : listMap.keySet()) {
             preparedStatement1.setString(1, string);
             ResultSet resultSet1 = preparedStatement1.executeQuery();
-            ArrayList<String> current = listMap.get(string);
+            ArrayList<String> current =  listMap.get(string);
             while (resultSet1.next()) {
                 current.add(resultSet1.getString(2));
             }
