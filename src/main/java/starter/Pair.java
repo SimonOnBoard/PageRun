@@ -8,4 +8,12 @@ public class Pair<T, T1> {
         this.key = key;
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return "Pair{" +
+                "key=" + key +
+                ", value=" + value +
+                '}';
+    }
 }

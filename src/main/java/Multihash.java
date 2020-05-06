@@ -61,16 +61,39 @@ public class Multihash {
             List<Pair<Integer,Integer>> pairs = new ArrayList<>();
             bucketPairs.put(buck, new ArrayList<>());
             for(int s = 0; s < size - 1; s++){
-                for(int end = s; end < size; end++){
+                for(int end = s + 1; end < size; end++) {
                     String first = strings.get(s);
+                    System.out.print(first);
                     String last = strings.get(end);
-                    pairs.add(new Pair<>(numberMap.get(first), numberMap.get(last)));
+                    System.out.print(last);
+                    Pair<Integer, Integer> pair = new Pair<>(numberMap.get(first), numberMap.get(last));
+                    System.out.print(pair);
+                    pairs.add(pair);
+                    System.out.print("\n");
                 }
             }
-            System.out.println();
             System.out.println("Bucket size: " + size);
             System.out.println("Pairs size: " + pairs.size());
-            break;
+        }
+        int mod = numberMap.size();
+
+        Map<Integer, List<Pair<Integer,Integer>>> firstBucket = new HashMap<>();
+
+        for(Map.Entry<String,List<Pair<Integer,Integer>>> entry: bucketPairs.entrySet()){
+            for(Pair<Integer,Integer> pair : entry.getValue()){
+                long hash = 2* pair.value + 3 * pair.key;
+                int index = (int)(hash % mod);
+                if(firstBucket.get(index) != null){
+                    List<Pair<Integer,Integer>> pairs = firstBucket.get(index);
+                    pairs.add(pair);
+                    firstBucket.put(index,pairs);
+                }
+                else{
+                    List<Pair<Integer,Integer>> pairs = new ArrayList<>();
+                    pairs.add(pair);
+                    firstBucket.put(index,pairs);
+                }
+            }
         }
 
     }
