@@ -58,7 +58,7 @@ public class Hits {
         }
 
         //выводим матрицы на экран чтобы убедиться в их правильности
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i <size; i++) {
             for (int j = 0; j < size; j++) {
                 System.out.print(matrix[i][j] + "    ");
             }
@@ -83,7 +83,7 @@ public class Hits {
         //инициализируем a
         double[] a = new double[size];
 
-        for(int i = 0; i < 20; i++){
+        for(int i = 0; i <= 20; i++){
             a = calculateA(matrix, h, size);
             h = calculateH(matrix, a, size);
 
